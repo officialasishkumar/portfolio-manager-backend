@@ -9,11 +9,20 @@ import schemas
 import crud
 from database import engine
 from auth import get_current_user, get_db
+from fastapi.middleware.cors import CORSMiddleware
 
 # Create the database tables
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Mock Exchange")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/login", response_model=schemas.TokenSchema)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
